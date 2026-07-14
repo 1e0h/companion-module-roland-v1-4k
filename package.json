@@ -1,0 +1,23 @@
+{
+	"name": "roland-v1-4k",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"format": "prettier -w .",
+		"lint:raw": "eslint --ext .ts --ext .js --ignore-pattern dist --ignore-pattern pkg",
+		"lint": "yarn lint:raw ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bitfocus/companion-module-roland-v1-4k.git"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"@companion-module/base": "~1.4.1"
+	},
+	"devDependencies": {
+		"@companion-module/tools": "^1.5.2",
+		"prettier": "^3.2.5"
+	}
+}
