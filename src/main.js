@@ -1,13 +1,13 @@
 const { InstanceBase, InstanceStatus, runEntrypoint } = require('@companion-module/base')
-const upgrades = require('./src/upgrades')
+const upgrades = require('./upgrades')
 
-const config = require('./src/config')
-const actions = require('./src/actions')
-const feedbacks = require('./src/feedbacks')
-const variables = require('./src/variables')
-const presets = require('./src/presets')
-const api = require('./src/api')
-const constants = require('./src/constants')
+const config = require('./config')
+const actions = require('./actions')
+const feedbacks = require('./feedbacks')
+const variables = require('./variables')
+const presets = require('./presets')
+const api = require('./api')
+const constants = require('./constants')
 
 class V14KInstance extends InstanceBase {
 	constructor(internal) {

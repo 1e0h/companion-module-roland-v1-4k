@@ -1,19 +1,23 @@
 {
-	"id": "roland-v1-4k",
-	"name": "roland-v1-4k",
-	"shortname": "v1-4k",
+	"id": "companion-module-roland-v1-4k",
+	"name": "companion-module-roland-v1-4k",
+	"shortname": "V-1-4K",
 	"description": "Roland V-1-4K Streaming Video Switcher",
 	"version": "0.0.0",
 	"license": "MIT",
-	"repository": "git+https://github.com/bitfocus/companion-module-roland-v1-4k.git",
-	"bugs": "https://github.com/bitfocus/companion-module-roland-v1-4k/issues",
-	"maintainers": [],
+	"repository": "git+https://github.com/1e0h/companion-module-roland-v1-4k.git",
+	"bugs": "https://github.com/1e0h/companion-module-roland-v1-4k/issues",
+	"maintainers": [
+		{
+			"name": "1e0h"
+		}
+	],
 	"legacyIds": [],
 	"runtime": {
 		"type": "node18",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
-		"entrypoint": "../index.js"
+		"entrypoint": "main.js"
 	},
 	"manufacturer": "Roland",
 	"products": ["V-1-4K"],
