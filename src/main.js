@@ -75,7 +75,6 @@ class V14KInstance extends InstanceBase {
 		this.initPresets()
 
 		this.checkFeedbacks()
-		this.checkVariables()
 
 		this.initConnection()
 	}

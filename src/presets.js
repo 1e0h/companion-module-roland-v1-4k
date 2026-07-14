@@ -70,6 +70,38 @@ module.exports = {
 			}
 		}
 
+		// PVW source buttons
+		for (let i = 0; i < self.CHOICES_INPUTS.length; i++) {
+			let input = self.CHOICES_INPUTS[i]
+			presets[`pvw_${input.id}`] = {
+				type: 'button',
+				category: 'PVW Select',
+				name: `PVW ${input.label}`,
+				style: {
+					text: `PVW\\n${input.label}`,
+					size: 'auto',
+					color: combineRgb(255, 255, 255),
+					bgcolor: combineRgb(0, 0, 0),
+				},
+				steps: [
+					{
+						down: [{ actionId: 'select_pvw', options: { source: input.id } }],
+						up: [],
+					},
+				],
+				feedbacks: [
+					{
+						feedbackId: 'pst_source',
+						options: { source: input.id },
+						style: {
+							bgcolor: combineRgb(0, 255, 0),
+							color: combineRgb(0, 0, 0),
+						},
+					},
+				],
+			}
+		}
+
 		// AUTO / CUT
 		presets['auto_take'] = {
 			type: 'button',

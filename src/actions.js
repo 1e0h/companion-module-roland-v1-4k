@@ -38,6 +38,22 @@ module.exports = {
 			},
 		}
 
+		actions['select_pvw'] = {
+			name: 'PVW Source Select',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Source',
+					id: 'source',
+					default: 'INPUT1',
+					choices: self.CHOICES_INPUTS,
+				},
+			],
+			callback: async (event) => {
+				self.sendSimpleCommand(`PST:${event.options.source};`)
+			},
+		}
+
 		actions['auto_take'] = {
 			name: 'AUTO Transition',
 			options: [],

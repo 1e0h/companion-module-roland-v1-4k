@@ -108,7 +108,6 @@ module.exports = {
 			}
 
 			self.checkFeedbacks()
-			self.checkVariables()
 		} catch (error) {
 			self.log('error', 'Error parsing data: ' + error)
 			self.log('error', 'Data: ' + data)
@@ -433,39 +432,60 @@ module.exports = {
 	startInterval: function () {
 		let self = this
 
+		self.pollQueue = []
+		self.pollTimer = null
+		self.memoryNamesLoaded = false
+
 		if (self.config.polling) {
-			self.log('info', `Polling interval: ${self.config.pollingrate || 1000}ms`)
-			if (self.config.pollingrate === undefined) {
-				self.config.pollingrate = 1000
-			}
-			self.INTERVAL = setInterval(self.getData.bind(self), parseInt(self.config.pollingrate))
+			let rate = parseInt(self.config.pollingrate) || 3000
+			if (rate < 1000) rate = 1000
+			self.log('info', `Polling interval: ${rate}ms`)
+			self.INTERVAL = setInterval(self.getData.bind(self), rate)
 		}
 	},
 
 	getData: function () {
 		let self = this
 
-		self.sendSimpleCommand('QPGM;')
-		self.sendSimpleCommand('QPST;')
-		self.sendSimpleCommand('TLY;')
-		self.sendSimpleCommand('QVFL;')
-		self.sendSimpleCommand('QATG;')
-		self.sendSimpleCommand('QTRS;')
-		self.sendSimpleCommand('QFTB;')
-		self.sendSimpleCommand('QPPS:PinP1;')
-		self.sendSimpleCommand('QPPW:PinP1;')
-		self.sendSimpleCommand('QDSK:DSK1;')
-		self.sendSimpleCommand('QDVW:DSK1;')
-		self.sendSimpleCommand('QDSS:DSK1;')
-		self.sendSimpleCommand('QSPS:SPLIT1;')
-		self.sendSimpleCommand('QROISW;')
-		self.sendSimpleCommand('QVOS:HDMI3;')
-		self.sendSimpleCommand('QVOS:HDMI4;')
-		self.sendSimpleCommand('QMEM;')
-		self.sendSimpleCommand('QASW;')
-		self.sendSimpleCommand('QATM;')
+		let commands = [
+			'QPGM;', 'QPST;', 'TLY;', 'QVFL;', 'QATG;', 'QTRS;', 'QFTB;',
+			'QPPS:PinP1;', 'QPPW:PinP1;', 'QDSK:DSK1;', 'QDVW:DSK1;', 'QDSS:DSK1;',
+			'QSPS:SPLIT1;', 'QROISW;', 'QVOS:HDMI3;', 'QVOS:HDMI4;',
+			'QMEM;', 'QASW;', 'QATM;',
+		]
 
-		self.getMemoryNames()
+		self.pollQueue = commands.slice()
+
+		if (!self.memoryNamesLoaded) {
+			for (let i = 0; i < 8; i++) {
+				let hexMem = i.toString(16).padStart(2, '0').toUpperCase()
+				for (let j = 0; j < 8; j++) {
+					let hexChar = j.toString(16).padStart(2, '0').toUpperCase()
+					self.pollQueue.push('RQH:60' + hexMem + hexChar + ',000001;')
+				}
+			}
+			self.memoryNamesLoaded = true
+		}
+
+		self.processQueue()
+	},
+
+	processQueue: function () {
+		let self = this
+
+		if (self.pollTimer) {
+			clearTimeout(self.pollTimer)
+			self.pollTimer = null
+		}
+
+		if (self.pollQueue.length === 0) return
+
+		let cmd = self.pollQueue.shift()
+		self.sendRawCommand(cmd)
+
+		if (self.pollQueue.length > 0) {
+			self.pollTimer = setTimeout(self.processQueue.bind(self), 50)
+		}
 	},
 
 	subscribeToTally: function () {
@@ -476,13 +496,7 @@ module.exports = {
 	getMemoryNames: function () {
 		let self = this
 
-		for (let i = 0; i < 8; i++) {
-			let hexMemory = i.toString(16).padStart(2, '0').toUpperCase()
-			for (let j = 0; j < 8; j++) {
-				let hexChar = j.toString(16).padStart(2, '0').toUpperCase()
-				self.sendRawCommand('RQH:60' + hexMemory + hexChar + ',000001;')
-			}
-		}
+		self.memoryNamesLoaded = false
 	},
 
 	sendSimpleCommand: function (command) {
